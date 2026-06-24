@@ -1,0 +1,16 @@
+{
+  "name": "Sàn Giao thương Hội viên · Nữ Doanh nhân",
+  "short_name": "Giao thương HV",
+  "description": "Sàn giao thương nội bộ cho hội viên Hội Nữ Doanh nhân — danh bạ, gian hàng, đặt mua, vinh danh.",
+  "lang": "vi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a3d78",
+  "theme_color": "#1b9cd8",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

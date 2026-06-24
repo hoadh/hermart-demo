@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1b9cd8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Giao thương HV">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./icon-192.png">
+<title>Sàn Giao thương Hội viên · Nữ Doanh nhân Đà Nẵng</title>
+<style>
+
+:root{
+  /* magenta accent family (logo ring) — actions, highlights, prices */
+  --rose:#e6157e; --rose-d:#c00f68; --rose-l:#fbd0e3; --rose-bg:#fdeaf3;
+  /* blue family (logo mark) — structure, app bar, nav */
+  --blue:#1b9cd8; --blue-d:#0d72ab; --navy:#0a3d78; --blue-bg:#e9f4fb;
+  --plum:#0a3d78; --gold:#d4a017; --ink:#13263a; --muted:#6f8093;
+  --line:#dce8f3; --bg:#eef4fa; --panel:#ffffff;
+  --ok:#2f8a4e; --okbg:#e2f3e8; --wait:#b07d12; --waitbg:#fbf0d6;
+  --go:#1565c0; --gobg:#dde9fb; --no:#b03030; --nobg:#f6dede;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:linear-gradient(135deg,#dceaf6,#e6eef7 55%,#f0e6f0);
+  color:var(--ink);font-family:"Segoe UI",-apple-system,system-ui,Arial,sans-serif;
+  line-height:1.45;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px 50px}
+a{color:inherit;text-decoration:none}
+
+/* page header */
+.pagehead{max-width:880px;text-align:center;margin-bottom:18px}
+.pagehead h1{font-size:22px;margin:0 0 4px;color:var(--navy);letter-spacing:.2px}
+.pagehead p{margin:0;color:var(--muted);font-size:13px}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px;max-width:760px}
+.toolbar button{border:1px solid var(--line);background:#fff;color:var(--blue-d);
+  font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:20px;cursor:pointer;transition:.15s}
+.toolbar button:hover{background:var(--blue-bg)}
+.toolbar button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* phone */
+.phone{width:392px;max-width:100%;height:760px;background:var(--panel);border-radius:34px;
+  box-shadow:0 24px 60px rgba(120,30,70,.22),0 4px 14px rgba(0,0,0,.08);
+  overflow:hidden;display:flex;flex-direction:column;position:relative;border:1px solid #fff}
+.notch{height:30px;background:#1c1320;display:flex;align-items:center;justify-content:center;flex:none}
+.notch::after{content:"";width:120px;height:18px;background:#1c1320;border-radius:0 0 14px 14px;
+  position:absolute;top:0;left:50%;transform:translateX(-50%)}
+.notch .pill{width:54px;height:6px;background:#3a2c34;border-radius:6px;z-index:2}
+
+.viewport{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;background:var(--bg)}
+.viewport::-webkit-scrollbar{width:0}
+.screen{display:none;flex-direction:column;min-height:100%;animation:fade .25s ease}
+.screen.active{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* app bar */
+.appbar{background:linear-gradient(120deg,var(--blue),var(--navy));color:#fff;padding:14px 16px;
+  display:flex;align-items:center;gap:10px;flex:none}
+.appbar .back{font-size:22px;line-height:1;cursor:pointer;opacity:.95;margin-right:2px}
+.appbar .ttl{font-weight:700;font-size:16px;flex:1}
+.appbar .ic{font-size:18px;opacity:.95;cursor:pointer}
+.searchwrap{background:linear-gradient(120deg,var(--blue),var(--navy));padding:0 14px 14px;flex:none}
+.searchwrap .s{background:#fff;border-radius:11px;padding:10px 13px;font-size:13px;color:var(--muted);
+  display:flex;align-items:center;gap:8px}
+
+.body{padding:15px 14px 22px;display:flex;flex-direction:column;gap:13px;flex:1}
+.sectt{font-weight:700;font-size:14px;color:var(--ink);margin:2px 0 -2px;display:flex;justify-content:space-between;align-items:center}
+.sectt a{font-size:12px;color:var(--rose);font-weight:600;cursor:pointer}
+.muted{color:var(--muted);font-size:12.5px}
+
+/* buttons */
+.btn{background:linear-gradient(120deg,var(--rose),var(--rose-d));color:#fff;border:none;
+  border-radius:12px;padding:13px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;
+  box-shadow:0 6px 14px rgba(194,24,91,.25);transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:#fff;color:var(--rose-d);border:1.5px solid var(--rose-l);box-shadow:none}
+.btn.gold{background:linear-gradient(120deg,#e0ad1e,#c89000);box-shadow:0 6px 14px rgba(200,144,0,.25)}
+.btn.sm{padding:9px 12px;font-size:12.5px;border-radius:10px;box-shadow:none}
+.btn.block{width:100%}
+.btnrow{display:flex;gap:9px}.btnrow>*{flex:1}
+
+/* fields */
+.field{border:1.5px solid var(--line);border-radius:11px;padding:12px 13px;color:var(--ink);
+  background:#fff;font-size:13.5px;width:100%;outline:none}
+.field::placeholder{color:#b8a9b1}
+.label{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:-6px}
+
+/* chips */
+.chiprow{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin:0 -2px}
+.chiprow::-webkit-scrollbar{height:0}
+.chip{white-space:nowrap;border:1.3px solid var(--line);border-radius:18px;padding:6px 13px;
+  font-size:12px;color:var(--muted);background:#fff;cursor:pointer;flex:none}
+.chip.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+.chip.sm{padding:3px 9px;font-size:10.5px;border-radius:12px}
+
+/* member card */
+.av{width:46px;height:46px;border-radius:12px;flex:none;color:#fff;font-weight:800;font-size:15px;
+  display:flex;align-items:center;justify-content:center;background:var(--rose);box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.mcard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;display:flex;
+  gap:12px;align-items:center;cursor:pointer;transition:.15s}
+.mcard:active{background:var(--rose-bg)}
+.mc-body{flex:1;min-width:0}
+.mc-name{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-sub{color:var(--muted);font-size:11.5px;margin:1px 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-arr{color:#d9c4ce;font-size:22px;flex:none}
+
+/* stat tiles */
+.stats2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;text-align:center}
+.stat b{display:block;font-size:21px;color:var(--rose-d);font-weight:800}
+.stat span{font-size:11px;color:var(--muted)}
+.stat.hero{background:linear-gradient(120deg,var(--blue),var(--navy));border:none;color:#fff}
+.stat.hero b{color:#fff}.stat.hero span{color:rgba(255,255,255,.85)}
+
+/* quick grid */
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qbtn{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;
+  cursor:pointer;font-size:12.5px;font-weight:600;transition:.15s}
+.qbtn:active{background:var(--rose-bg)}
+.qbtn .qi{font-size:23px;display:block;margin-bottom:5px}
+
+/* category strip */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px 6px;text-align:center}
+.cats .c{cursor:pointer;font-size:10px;color:var(--muted);font-weight:600;line-height:1.25}
+.cats .c .ci{width:48px;height:48px;border-radius:15px;margin:0 auto 5px;font-size:21px;
+  background:var(--blue-bg);display:flex;align-items:center;justify-content:center}
+
+/* products */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.prod{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;transition:.15s}
+.prod:active{transform:scale(.98)}
+.prod .pi{height:96px;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff}
+.prod .pd{padding:9px 10px 11px}
+.prod .pn{font-size:12px;line-height:1.35;height:33px;overflow:hidden;font-weight:600}
+.prod .pp{color:var(--rose-d);font-weight:800;font-size:14px;margin-top:5px}
+.prod .ps{font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* contact buttons */
+.contact{display:flex;gap:9px}
+.contact .b{flex:1;border-radius:11px;padding:11px;text-align:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer}
+.contact .call{background:#2f8a4e}.contact .zalo{background:#1565c0}
+
+/* badges */
+.badge{font-size:10.5px;padding:3px 9px;border-radius:11px;font-weight:700;display:inline-block}
+.b-wait{background:var(--waitbg);color:var(--wait)}.b-ok{background:var(--okbg);color:var(--ok)}
+.b-go{background:var(--gobg);color:var(--go)}.b-no{background:var(--nobg);color:var(--no)}
+
+/* order card */
+.ocard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;display:flex;flex-direction:column;gap:7px}
+.ocard .r{display:flex;justify-content:space-between;align-items:center}
+.ocard .shop{font-weight:700;font-size:13px}
+.ocard .price{color:var(--rose-d);font-weight:800}
+
+/* tabs */
+.tabs{display:flex;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:11.5px}
+.tabs div{flex:1;text-align:center;padding:9px 3px;color:var(--muted);cursor:pointer;font-weight:600}
+.tabs div.on{background:var(--rose);color:#fff}
+
+/* rank */
+.rank{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 12px}
+.rank .pos{width:28px;height:28px;border-radius:50%;background:var(--rose-bg);color:var(--rose-d);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+.rank.top1 .pos{background:#fff4d6;color:#bf9000}.rank.top2 .pos{background:#eef0f3;color:#7d8893}
+.rank.top3 .pos{background:#f6e2d6;color:#a36a3e}
+.rank .rn{flex:1;min-width:0}.rank .rn .nm{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .rn .sub{font-size:11px;color:var(--muted)}
+.rank .val{color:var(--rose-d);font-weight:800;font-size:13px;white-space:nowrap}
+
+/* bars chart */
+.bars{display:flex;align-items:flex-end;gap:8px;height:120px;padding:6px 2px 0;border-bottom:2px solid var(--line)}
+.bars .bar{flex:1;background:linear-gradient(180deg,var(--blue),var(--navy));border-radius:6px 6px 0 0;position:relative;min-height:6px}
+.bars .bar span{position:absolute;bottom:-19px;left:0;right:0;text-align:center;font-size:9.5px;color:var(--muted)}
+.barwrap{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 14px 26px}
+
+/* product detail bottom bar */
+.buybar{position:sticky;bottom:0;display:flex;background:#fff;border-top:1px solid var(--line);flex:none}
+.buybar . chat{}
+.buybar .mini{display:flex;flex-direction:column;align-items:center;justify-content:center;width:62px;font-size:9.5px;color:var(--muted);border-right:1px solid var(--line);cursor:pointer}
+.buybar .mini .mi{font-size:18px}
+.buybar .acts{flex:1;display:flex}
+.buybar .acts div{flex:1;text-align:center;padding:15px 4px;font-weight:800;font-size:13.5px;color:#fff;cursor:pointer}
+.buybar .acts .cart{background:var(--plum)}.buybar .acts .buy{background:var(--rose)}
+
+/* nav */
+.navbar{display:flex;background:#fff;border-top:1px solid var(--line);flex:none}
+.navbar div{flex:1;text-align:center;padding:8px 2px 9px;font-size:9.5px;color:var(--muted);cursor:pointer;font-weight:600}
+.navbar div .ni{font-size:19px;display:block;margin-bottom:2px;filter:grayscale(1);opacity:.55}
+.navbar div.on{color:var(--blue-d)}.navbar div.on .ni{filter:none;opacity:1}
+
+/* misc */
+.banner{background:linear-gradient(120deg,var(--blue),var(--rose));border-radius:16px;padding:16px;color:#fff}
+.banner h3{margin:0 0 4px;font-size:15px}.banner p{margin:0;font-size:12px;opacity:.9}
+.callout{background:var(--rose-bg);border-left:3px solid var(--rose);border-radius:0 10px 10px 0;padding:10px 12px;font-size:12px;color:var(--ink)}
+.logo-badge{width:78px;height:78px;border-radius:22px;margin:0 auto;background:linear-gradient(135deg,var(--blue),var(--rose));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 10px 22px rgba(194,24,91,.3)}
+.divider{height:1px;background:var(--line);margin:3px 0}
+.qty{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.qty button{width:30px;height:30px;border:none;background:#fff;font-size:16px;cursor:pointer;color:var(--rose-d)}
+.qty span{width:34px;text-align:center;font-weight:700;font-size:13px}
+.tag-new{background:var(--gold);color:#fff;font-size:9px;font-weight:800;border-radius:9px;padding:1px 7px;vertical-align:middle}
+.pmember{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px;display:flex;gap:11px;align-items:center;cursor:pointer}
+.foot{text-align:center;color:#b39aa6;font-size:11px;margin-top:18px}
+@media(max-width:440px){.phone{height:88vh}}
+
+/* ===================== WEBAPP RESPONSIVE SHELL ===================== */
+:root{--side:250px;--tab-h:62px}
+html{height:100%}
+body{margin:0!important;padding:0!important;display:block!important;background:var(--bg)!important;min-height:100dvh}
+.pagehead,.foot,.notch,#toolbar{display:none!important}
+.shell{display:flex;min-height:100dvh;align-items:stretch}
+.sidebar{width:var(--side);flex:none;background:linear-gradient(180deg,var(--navy),#06294f);color:#fff;
+  position:sticky;top:0;align-self:flex-start;height:100dvh;display:flex;flex-direction:column;padding:18px 14px;gap:3px;overflow-y:auto}
+.sidebar .brand{display:flex;align-items:center;gap:11px;margin:2px 4px 16px}
+.sidebar .brand .lg{width:44px;height:44px;border-radius:13px;flex:none;background:linear-gradient(135deg,var(--blue),var(--rose));
+  display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.sidebar .brand b{font-size:14px;line-height:1.2;display:block}
+.sidebar .brand span{font-size:11px;opacity:.78}
+.snav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;cursor:pointer;font-size:13.5px;color:#d2e2f2;font-weight:600;transition:.12s}
+.snav .si{font-size:17px;width:22px;text-align:center;flex:none}
+.snav:hover{background:rgba(255,255,255,.09)}
+.snav.on{background:rgba(255,255,255,.17);color:#fff}
+.sidehint{margin-top:auto;font-size:10.5px;color:#9fb8d6;padding:12px;line-height:1.45;border-top:1px solid rgba(255,255,255,.12)}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;min-height:100dvh}
+.viewport{flex:1;overflow-y:auto;background:var(--bg)}
+.screen.active{min-height:100%}
+.appbar{position:sticky;top:0;z-index:6}
+.body{max-width:1180px;margin:0 auto;width:100%}
+.screen .navbar{display:none!important}
+
+.tabbar{display:none}
+
+@media(max-width:979px){
+  .sidebar{display:none}
+  .viewport{padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom))}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);
+    box-shadow:0 -2px 12px rgba(10,61,120,.08);padding-bottom:env(safe-area-inset-bottom)}
+  .tabbar div{flex:1;text-align:center;padding:8px 2px 9px;font-size:10px;color:var(--muted);cursor:pointer;font-weight:600}
+  .tabbar div .ni{font-size:21px;display:block;margin-bottom:2px;filter:grayscale(1);opacity:.5}
+  .tabbar div.on{color:var(--blue-d)} .tabbar div.on .ni{filter:none;opacity:1}
+  body[data-screen="product"] .tabbar,body[data-screen="cart"] .tabbar,body[data-screen="login"] .tabbar{display:none}
+  body[data-screen="product"] .viewport,body[data-screen="cart"] .viewport{padding-bottom:0}
+}
+body[data-screen="login"] .sidebar{display:none}
+
+@media(min-width:980px){
+  .body{padding:24px 28px 48px}
+  .appbar{padding:16px 28px}
+  .searchwrap{padding-left:28px;padding-right:28px}
+  .pgrid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+  .quick{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .cats{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+  .stats2{grid-template-columns:repeat(4,1fr)}
+  #dir-list,#lb-list,#orders-list,#seller-list,#store-list{display:grid!important;
+    grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px!important}
+  .buybar{max-width:1180px;margin:0 auto;width:100%}
+  .banner{padding:22px 24px}
+}
+@media(min-width:1400px){ .body{max-width:1320px} }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="lg">👜</div>
+      <div><b>Sàn Giao thương</b><span>Hội Nữ Doanh nhân Đà Nẵng</span></div>
+    </div>
+    <div id="side-nav"></div>
+    <div class="sidehint">Bản demo · dữ liệu 68 hội viên thật. Cài lên điện thoại qua "Thêm vào màn hình chính".</div>
+  </aside>
+  <main class="main">
+    <div class="viewport" id="vp">
+<!-- 1 LOGIN -->
+    <div class="screen" data-s="login">
+      <div class="appbar"><div class="ttl">Đăng nhập</div></div>
+      <div class="body" style="gap:16px;justify-content:flex-start;padding-top:34px">
+        <div class="logo-badge">👜</div>
+        <div style="text-align:center">
+          <div style="font-weight:800;font-size:18px;color:var(--rose-d)">Sàn Giao thương Hội viên</div>
+          <div class="muted">Hội Nữ Doanh nhân Tam Kỳ</div>
+        </div>
+        <div class="callout" style="text-align:center">Nhập email để nhận <b>link đăng nhập</b> — không cần mật khẩu, không OTP.</div>
+        <div class="label">Email của bạn</div>
+        <input class="field" placeholder="ten@email.com" value="">
+        <button class="btn block" onclick="go('home')">Gửi link đăng nhập</button>
+        <div class="mcard" style="flex-direction:column;text-align:center;gap:5px;cursor:default">
+          <div style="font-size:28px">📧</div>
+          <b style="font-size:13px">Đã gửi link tới email của bạn</b>
+          <div class="muted">Mở email và bấm "Đăng nhập" để vào thẳng ứng dụng.</div>
+        </div>
+        <div class="muted" style="text-align:center">Gửi lại sau 30s · <a style="color:var(--rose);font-weight:700;cursor:pointer" onclick="go('home')">Bỏ qua (demo) ›</a></div>
+      </div>
+    </div>
+
+    <!-- 2 HOME -->
+    <div class="screen" data-s="home">
+      <div class="appbar"><div class="ttl">Sàn Giao thương</div><div class="ic">🔔</div></div>
+      <div class="searchwrap"><div class="s" onclick="go('shop')">🔍 Tìm doanh nghiệp, sản phẩm…</div></div>
+      <div class="body">
+        <div class="banner">
+          <h3>Chào chị Mai 👋</h3>
+          <p>Mua bán nội bộ Hội — ủng hộ chị em, cùng nhau phát triển.</p>
+        </div>
+        <div class="stats2">
+          <div class="stat hero"><b id="h-rev">—</b><span>Doanh số Hội (kỳ này)</span></div>
+          <div class="stat"><b id="h-tx">—</b><span>Giao dịch hoàn thành</span></div>
+        </div>
+        <button class="btn block" onclick="go('shop')">🛍️ Mua sắm sản phẩm hội viên</button>
+        <div class="sectt">Truy cập nhanh</div>
+        <div class="quick">
+          <div class="qbtn" onclick="go('directory')"><span class="qi">📒</span>Danh bạ hội viên</div>
+          <div class="qbtn" onclick="go('leaderboard')"><span class="qi">🏆</span>Bảng xếp hạng</div>
+          <div class="qbtn" onclick="go('orders')"><span class="qi">📦</span>Đơn của tôi</div>
+          <div class="qbtn" onclick="go('storefront')"><span class="qi">🏬</span>Gian hàng của tôi</div>
+          <div class="qbtn" onclick="go('sellerorders')"><span class="qi">🧾</span>Đơn bán</div>
+          <div class="qbtn" onclick="go('admin')"><span class="qi">📊</span>Quản trị</div>
+        </div>
+        <div class="sectt">Gợi ý cho bạn <a onclick="go('shop')">Xem tất cả ›</a></div>
+        <div class="pgrid" id="home-prods"></div>
+      </div>
+    </div>
+
+    <!-- 3 DIRECTORY -->
+    <div class="screen" data-s="directory">
+      <div class="appbar"><div class="ttl">Danh bạ hội viên</div></div>
+      <div class="searchwrap"><div class="s">🔍 Tên DN / sản phẩm / ngành…</div></div>
+      <div class="body">
+        <div class="chiprow" id="dir-chips"></div>
+        <div class="muted" id="dir-count"></div>
+        <div id="dir-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- 4 PROFILE -->
+    <div class="screen" data-s="profile">
+      <div class="appbar"><div class="back" onclick="back()">‹</div><div class="ttl">Hồ sơ doanh nghiệp</div></div>
+      <div class="body" id="profile-body"></div>
+    </div>
+
+    <!-- 5 STOREFRONT -->
+    <div class="screen" data-s="storefront">
+      <div class="appbar"><div class="ttl">Gian hàng của tôi</div></div>
+      <div class="body">
+        <div class="banner" style="display:flex;justify-content:space-between;align-items:center">
+          <div><h3 style="margin:0">12 / 20 sản phẩm</h3><p>Còn 8 chỗ trống trong gian hàng</p></div>
+          <div style="font-size:30px">🏬</div>
+        </div>
+        <div class="callout">Sản phẩm đăng lên <b>hiển thị ngay</b>, không cần duyệt. Tối đa 20 mục.</div>
+        <button class="btn block">+ Thêm sản phẩm / dịch vụ</button>
+        <div class="sectt">Sản phẩm đang bán</div>
+        <div id="store-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- 6 SHOP -->
+    <div class="screen" data-s="shop">
+      <div class="appbar"><div class="ttl">Mua sắm hội viên</div><div class="ic" onclick="go('cart')">🛒</div></div>
+      <div class="searchwrap"><div class="s">🔍 Tìm sản phẩm, dịch vụ, shop…</div></div>
+      <div class="body">
+        <div class="cats" id="shop-cats"></div>
+        <div class="sectt">Sản phẩm hội viên <span class="tag-new">MỚI</span></div>
+        <div class="pgrid" id="shop-prods"></div>
+      </div>
+    </div>
+
+    <!-- 7 PRODUCT -->
+    <div class="screen" data-s="product">
+      <div class="appbar"><div class="back" onclick="back()">‹</div><div class="ttl">Chi tiết sản phẩm</div></div>
+      <div class="body" id="product-body" style="padding-bottom:8px"></div>
+      <div class="buybar">
+        <div class="mini" onclick="go('cart')"><div class="mi">🛒</div>Giỏ</div>
+        <div class="acts"><div class="cart" onclick="go('cart')">Thêm giỏ</div><div class="buy" onclick="go('cart')">Đặt mua</div></div>
+      </div>
+    </div>
+
+    <!-- 8 CART -->
+    <div class="screen" data-s="cart">
+      <div class="appbar"><div class="back" onclick="back()">‹</div><div class="ttl">Xác nhận đặt mua</div></div>
+      <div class="body" id="cart-body" style="padding-bottom:8px"></div>
+      <div class="buybar"><div class="acts"><div class="buy" style="flex:1" onclick="orderPlaced()">Gửi đơn cho người bán</div></div></div>
+    </div>
+
+    <!-- 9 ORDERS (buyer) -->
+    <div class="screen" data-s="orders">
+      <div class="appbar"><div class="ttl">Đơn của tôi</div></div>
+      <div class="body">
+        <div class="tabs"><div class="on">Tất cả</div><div>Chờ XN</div><div>Đang giao</div><div>Hoàn thành</div></div>
+        <div id="orders-list" style="display:flex;flex-direction:column;gap:11px"></div>
+        <div class="callout">Bấm <b>"Đã nhận hàng"</b> để khép đơn — đơn hoàn thành tự động tính vào thống kê của Hội.</div>
+      </div>
+    </div>
+
+    <!-- 10 SELLER ORDERS -->
+    <div class="screen" data-s="sellerorders">
+      <div class="appbar"><div class="ttl">Đơn bán của tôi</div></div>
+      <div class="body">
+        <div class="tabs"><div class="on">Cần xác nhận (2)</div><div>Đang giao</div><div>Hoàn thành</div></div>
+        <div id="seller-list" style="display:flex;flex-direction:column;gap:11px"></div>
+        <div class="sectt" style="margin-top:4px">Doanh số của tôi</div>
+        <div class="stats2">
+          <div class="stat"><b>18</b><span>Đơn hoàn thành</span></div>
+          <div class="stat"><b>12,4 triệu</b><span>Doanh số bán</span></div>
+          <div class="stat"><b>9</b><span>Khách trong Hội</span></div>
+          <div class="stat"><b>#3</b><span>Hạng doanh số</span></div>
+        </div>
+        <div class="callout"><b>Khâu chốt số liệu:</b> bấm "Hoàn thành" → đơn thành giao dịch được tính vào doanh số & xếp hạng. Không gõ lại.</div>
+      </div>
+    </div>
+
+    <!-- 11 LEADERBOARD -->
+    <div class="screen" data-s="leaderboard">
+      <div class="appbar"><div class="ttl">Bảng xếp hạng · Vinh danh</div></div>
+      <div class="body">
+        <div class="tabs"><div class="on">Doanh số</div><div>Số GD</div><div>Kết nối</div></div>
+        <div class="callout">🏆 Số liệu sinh <b>tự động</b> từ đơn hoàn thành. Vinh danh hội viên tích cực giao thương trong Hội.</div>
+        <div id="lb-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- 12 ADMIN -->
+    <div class="screen" data-s="admin">
+      <div class="appbar"><div class="ttl">Quản trị · Dashboard</div></div>
+      <div class="body">
+        <input class="field" value="Kỳ: Tháng 6/2026" readonly>
+        <div class="stats2">
+          <div class="stat hero"><b id="ad-rev">—</b><span>Tổng doanh số nội bộ</span></div>
+          <div class="stat"><b id="ad-tx">—</b><span>Tổng giao dịch</span></div>
+          <div class="stat"><b id="ad-mem">—</b><span>Hội viên tham gia</span></div>
+          <div class="stat"><b>+18%</b><span>So kỳ trước</span></div>
+        </div>
+        <div class="sectt">Doanh số theo tháng</div>
+        <div class="barwrap"><div class="bars" id="ad-bars"></div></div>
+        <button class="btn block">⬇ Xuất báo cáo (Excel / PDF)</button>
+        <div class="sectt">Quản lý hội viên</div>
+        <button class="btn ghost block">+ Thêm hội viên (nhập email)</button>
+        <button class="btn ghost block">⬆ Nhập danh sách từ Excel</button>
+        <div class="callout"><b>Không có khâu duyệt.</b> Ban Quản trị lập sẵn danh sách & gửi link đăng nhập; tập trung theo dõi và xuất báo cáo cuối kỳ.</div>
+      </div>
+    </div>
+
+    </div>
+  </main>
+</div>
+<nav class="tabbar" id="tabbar"></nav>
+<div id="toolbar" style="display:none"></div>
+
+<script>
+
+const M = [{"name": "Mai Thị Hà Trang", "title": "Giám đốc", "company": "HTX nông dược Linh Trang", "addr": "Tổ 2, thôn Ngọc Sơn Tây, xã Thăng Bình, thành phố Đà Nẵng", "field": "Sản xuất và kinh doanh các sản phẩm về nông sản và dược liệu", "phone": "0788 545 567", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "HT", "id": 0, "color": "#e6157e", "products": [{"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 12000000, "orders": 36, "partners": 4}, {"name": "Ngô Thị Kim Chung", "title": "Tổng giám đốc", "company": "Công ty TNHH TM&DV Digiso", "addr": "95 Phan Kế Bính, Kp Phú Ân, phường Quảng Phú, Tp Đà Nẵng", "field": "- Dịch vụ Pháp lý - Xuất nhập cảnh - Visa - Vé máy bay. Dịch vụ Sở hữu trí tuệ - Dịch vụ Thiết kế - In ấn - Quảng cáo - Quà tặng - Sản xuất,", "phone": "0905 506 564", "cat": "Ẩm thực", "emoji": "🍱", "ini": "KC", "id": 1, "color": "#2a86c4", "products": [{"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}, {"n": "Combo hải sản khô 1kg", "p": 320000}], "sales": 7000000, "orders": 7, "partners": 14}, {"name": "Dương Thị Ánh Nhạn", "title": "Giám đốc", "company": "VP số học Mặt Trời", "addr": "34 Ngô Sĩ Liên phường Bàn Thạch TP Đà Nẵng", "field": "Tham vấn tâm lý, coaching,Chuyên gia chăm sóc sức khoẻ chủ động.", "phone": "905343167", "cat": "Giáo dục", "emoji": "📚", "ini": "ÁN", "id": 2, "color": "#0a3d78", "products": [{"n": "Học phí mầm non / tháng", "p": 2500000}, {"n": "Khoá đào tạo nuôi dạy con", "p": 1500000}, {"n": "Combo văn phòng phẩm", "p": 120000}, {"n": "Bộ sách kỹ năng cho bé", "p": 180000}], "sales": 10000000, "orders": 38, "partners": 4}, {"name": "Lưu Thị Nhật Vi", "title": "Chủ cơ sở", "company": "Thiệp cưới Trinh Mỹ", "addr": "21 Hàn Thuyên - Phường Tam Kỳ - TP. Đà Nẵng", "field": "MC / Thiết kế và in ấn", "phone": "902481210", "cat": "In ấn & Thiết kế", "emoji": "🖨️", "ini": "NV", "id": 3, "color": "#8e1f6a", "products": [{"n": "Đồng phục công ty / áo", "p": 95000}, {"n": "In name card 1 hộp", "p": 90000}, {"n": "Thiệp cưới cao cấp 100c", "p": 850000}], "sales": 9000000, "orders": 16, "partners": 2}, {"name": "Mai Thị Thu Sương", "title": "Chủ cơ sở", "company": "HKD Ốc bươu đen Huy Hoàng", "addr": "tổ phú thanh, thôn nhuận sơn, xã thu bồn, tp đà nẵng", "field": "Sản xuất và kinh doanh thực phẩm Chuyên cung cấp các sp từ ốc bươu đen", "phone": "0359 3600 32", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TS", "id": 4, "color": "#e6157e", "products": [{"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Combo hải sản khô 1kg", "p": 320000}], "sales": 72000000, "orders": 9, "partners": 10}, {"name": "Ngô Thị Tâm", "title": "Tổng giám đốc", "company": "Công ty TNHH Đầu tư và phải triển Happy Group", "addr": "257 Nguyễn Văn Trỗi, phường Quảng Phú, Tp Đà Nẵng", "field": "- Kiến trúc - Xây dựng - Tranh trang trí - Giáo dục - Năng khiếu - Thể thao", "phone": "0931 956 199", "cat": "Giáo dục", "emoji": "📚", "ini": "TT", "id": 5, "color": "#8e1f6a", "products": [{"n": "Học phí mầm non / tháng", "p": 2500000}, {"n": "Combo văn phòng phẩm", "p": 120000}, {"n": "Khoá đào tạo nuôi dạy con", "p": 1500000}], "sales": 50000000, "orders": 8, "partners": 3}, {"name": "Phan Thị Phương Thảo", "title": "Chủ hộ kinh doanh", "company": "HKD cơ sở tinh chế yến sào nhà cô Bốn", "addr": "08 Lam Sơn, Phường Bàn Thạch, Tp Đà Nẵng", "field": "Sản xuất và Mua Bán Yến Sào", "phone": "0904 599 603", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "PT", "id": 6, "color": "#c00f68", "products": [{"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}], "sales": 66000000, "orders": 36, "partners": 14}, {"name": "Nguyễn Thị Quỳnh Nga", "title": "Giám đốc", "company": "Công ty TNHH Thực phẩm chay Long Hoa", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "QN", "id": 7, "color": "#c00f68", "products": [{"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Kẹo dẻo trái cây 250g", "p": 45000}], "sales": 49000000, "orders": 21, "partners": 8}, {"name": "Lê Thị Nguyệt", "title": "Giám đốc", "company": "Công ty CP Sâm Trà Linh và Dược liệu Quảng Nam", "addr": "63 Trần quý Cáp, phường Bàn Thạch, Thành phố Đà Nẵng.", "field": "Trồng, kinh doanh, sản xuất các sản phẩm từ Sâm Ngọc Linh. Kinh doanh dược liệu sạch Quảng Nam.", "phone": "917962789", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TN", "id": 8, "color": "#1565c0", "products": [{"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 76000000, "orders": 21, "partners": 16}, {"name": "Huỳnh Thị Sơn", "title": "Phó giám đốc", "company": "Công ty TNHH Thiết kế và Xây dựng Việt Ý", "addr": "102 Trưng Nữ Vương, Bàn Thạch, Đà Nẵng", "field": "", "phone": "932506919", "cat": "In ấn & Thiết kế", "emoji": "🖨️", "ini": "TS", "id": 9, "color": "#8e1f6a", "products": [{"n": "Đồng phục công ty / áo", "p": 95000}, {"n": "Thiệp cưới cao cấp 100c", "p": 850000}, {"n": "In name card 1 hộp", "p": 90000}], "sales": 80000000, "orders": 6, "partners": 4}, {"name": "Nguyễn Thị My Sa", "title": "Giám đốc", "company": "HTX Thủy hải sản Quảng Nam", "addr": "Khối phố Tỉnh Thuỷ, Phường Quảng Phú, TP Đà Nẵng, Việt Nam", "field": "Khai thác và chế biến thủy hải sản", "phone": "0398 514 840", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "MS", "id": 10, "color": "#0a3d78", "products": [{"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}], "sales": 56000000, "orders": 4, "partners": 3}, {"name": "Trương Thị Bốn", "title": "Chủ cơ sở", "company": "HKD Trương Thị Bốn", "addr": "", "field": "", "phone": "", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TB", "id": 11, "color": "#c00f68", "products": [{"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}, {"n": "Set quà doanh nghiệp", "p": 420000}, {"n": "Combo quà tặng cao cấp", "p": 280000}], "sales": 77000000, "orders": 31, "partners": 3}, {"name": "Hà Thị Thu Sương", "title": "Giám đốc", "company": "Công ty TNHH TMDV & XD Kiến Huy", "addr": "13 Trương Định, P Tam Kỳ", "field": "- Dịch vụ tư vấn đấu thầu thuộc nhiều lĩnh vực - Cung cấp các sp sinh học của Tập đoàn Amway: chăm sóc nhà cửa, chăm sóc sức khỏe, chăm sóc ", "phone": "0908 279 514", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "TS", "id": 12, "color": "#c00f68", "products": [{"n": "Gói gội đầu dưỡng sinh", "p": 150000}, {"n": "Combo mỹ phẩm dưỡng da", "p": 320000}], "sales": 11000000, "orders": 5, "partners": 10}, {"name": "Trần Thị Minh Thúy", "title": "Phó giám đốc", "company": "Công Ty Cổ phần Dược liệu Quảng Nam", "addr": "Thôn Tam Mỹ, xã Tam Xuân, Tp Đà Nẵng", "field": "Thu mua và cung cấp dược liệu, sản xuất sữa chua sấy thăng hoá, nuôi trồng đông trùng hạ thảo", "phone": "0935 338 303", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "MT", "id": 13, "color": "#0d72ab", "products": [{"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 62000000, "orders": 24, "partners": 6}, {"name": "Đoàn Thị Thanh Nguyện", "title": "Chủ cơ sở", "company": "Tiệm cơm chú tèo", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TN", "id": 14, "color": "#8e1f6a", "products": [{"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}], "sales": 30000000, "orders": 20, "partners": 5}, {"name": "Ngô Thị Hồng Nhân", "title": "Giám đốc", "company": "Công ty TNHH TiTiHa", "addr": "Thôn Phú Khê, xã Tam Xuân", "field": "Cung cấp sỉ & lẻ  bánh dừa nướng Aura Spa (71 Trần Dư)", "phone": "0362 242 266", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "HN", "id": 15, "color": "#8e1f6a", "products": [{"n": "Buổi tập cá nhân PT", "p": 250000}, {"n": "Combo mỹ phẩm dưỡng da", "p": 320000}, {"n": "Gói gội đầu dưỡng sinh", "p": 150000}], "sales": 13000000, "orders": 12, "partners": 15}, {"name": "Nguyễn Thị Bích Thảo", "title": "", "company": "CÔNG TY TNHH SẢN XUẤT VÀ THƯƠNG MẠI BT GROUP", "addr": "22 Thạch Lam, Phường Tân Thạnh, Thành phố Tam Kỳ, Quảng Nam", "field": "", "phone": "905973515", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "BT", "id": 16, "color": "#e6157e", "products": [{"n": "Set quà doanh nghiệp", "p": 420000}, {"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}, {"n": "Combo quà tặng cao cấp", "p": 280000}], "sales": 58000000, "orders": 37, "partners": 9}, {"name": "Lê Thị Kiều Trâm", "title": "Phó phòng", "company": "Ngân hàng Viettinbank - CN Nam Đà Nẵng", "addr": "", "field": "", "phone": "", "cat": "Tài chính & Pháp lý", "emoji": "💼", "ini": "KT", "id": 17, "color": "#c00f68", "products": [{"n": "Gói bảo hiểm phi nhân thọ", "p": 2000000}, {"n": "Tư vấn tài chính cá nhân", "p": 300000}, {"n": "Tư vấn pháp lý DN / buổi", "p": 500000}], "sales": 22000000, "orders": 7, "partners": 6}, {"name": "Lê Thị Thu", "title": "Giám đốc", "company": "Công ty TNHH MTV Phú Kim", "addr": "", "field": "", "phone": "", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TT", "id": 18, "color": "#0d72ab", "products": [{"n": "Combo quà tặng cao cấp", "p": 280000}, {"n": "Set quà doanh nghiệp", "p": 420000}, {"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}], "sales": 65000000, "orders": 13, "partners": 9}, {"name": "Vũ Thị Cẩm Vân", "title": "Chủ cơ sở", "company": "Nhà hàng tiệc cưới và CSSX KD DV Thanh Bình BTM", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "CV", "id": 19, "color": "#0d72ab", "products": [{"n": "Bánh dừa nướng đặc sản", "p": 55000}, {"n": "Combo hải sản khô 1kg", "p": 320000}, {"n": "Bánh đậu xanh hộp quà", "p": 75000}], "sales": 71000000, "orders": 25, "partners": 11}, {"name": "Kim Anh", "title": "", "company": "Nhà hàng Long Phụng", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "KA", "id": 20, "color": "#0a3d78", "products": [{"n": "Kẹo dẻo trái cây 250g", "p": 45000}, {"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}], "sales": 61000000, "orders": 37, "partners": 13}, {"name": "Ngô Thị Thanh Tâm", "title": "Trưởng vùng kinh doanh", "company": "Mibifone Đà Nẵng", "addr": "", "field": "", "phone": "", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TT", "id": 21, "color": "#1565c0", "products": [{"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}, {"n": "Set quà doanh nghiệp", "p": 420000}, {"n": "Combo quà tặng cao cấp", "p": 280000}], "sales": 64000000, "orders": 27, "partners": 2}, {"name": "Ngô Thị Minh Thùy", "title": "", "company": "Công ty TNHH Sâm và dược liệu Nảng Thùy Quảng Nam", "addr": "", "field": "", "phone": "", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "MT", "id": 22, "color": "#0d72ab", "products": [{"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}], "sales": 23000000, "orders": 9, "partners": 11}, {"name": "Nguyễn Thị Thu Sương", "title": "Phó giám đốc", "company": "Siêu thị Coop Mart", "addr": "07 Phan Chu Trinh, phường Tam Kỳ, TP Đà Nẵng", "field": "Siêu thị", "phone": "902675905", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TS", "id": 23, "color": "#0a3d78", "products": [{"n": "Combo quà tặng cao cấp", "p": 280000}, {"n": "Set quà doanh nghiệp", "p": 420000}], "sales": 75000000, "orders": 11, "partners": 4}, {"name": "Lưu Thị Lan", "title": "Luật sư", "company": "Văn phòng luật sư Lưu Lan", "addr": "", "field": "", "phone": "", "cat": "Tài chính & Pháp lý", "emoji": "💼", "ini": "TL", "id": 24, "color": "#1b9cd8", "products": [{"n": "Tư vấn tài chính cá nhân", "p": 300000}, {"n": "Tư vấn pháp lý DN / buổi", "p": 500000}, {"n": "Gói bảo hiểm phi nhân thọ", "p": 2000000}], "sales": 29000000, "orders": 26, "partners": 5}, {"name": "Phạm Thị Anh", "title": "", "company": "Áo dài Anh Phạm", "addr": "", "field": "", "phone": "", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TA", "id": 25, "color": "#8e1f6a", "products": [{"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}, {"n": "Set quà doanh nghiệp", "p": 420000}, {"n": "Combo quà tặng cao cấp", "p": 280000}], "sales": 18000000, "orders": 9, "partners": 16}, {"name": "Trần Thị Mỹ Yến", "title": "Phó giám đốc", "company": "Công ty TNHH - TMDV Phúc Vương", "addr": "", "field": "Dịch vụ nhà hàng, ẩm thực Nhật Bản", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "MY", "id": 26, "color": "#0d72ab", "products": [{"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Kẹo dẻo trái cây 250g", "p": 45000}, {"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}], "sales": 21000000, "orders": 8, "partners": 11}, {"name": "Võ Thị Minh Nga", "title": "Người sáng lập", "company": "Công ty TNHH Thực phẩm dinh dưỡng Bh.nong food", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "MN", "id": 27, "color": "#2a86c4", "products": [{"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Combo hải sản khô 1kg", "p": 320000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}], "sales": 29000000, "orders": 35, "partners": 12}, {"name": "Nguyễn Thị Hồng Sanh", "title": "Chủ cơ sở", "company": "HTX Nông nghiệp Hữu cơ Quảng Nam", "addr": "Xã Tam Thanh, phường Quảng Phú, Đà Nẵng", "field": "SX và KD Nông nghiệp, chăn nuôi, trồng trọt", "phone": "0913 005 509", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "HS", "id": 28, "color": "#2a86c4", "products": [{"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 70000000, "orders": 21, "partners": 3}, {"name": "Phạm Thị Ly Cơ", "title": "Chủ cơ sở", "company": "CSSX bánh đậu xanh Xuân Cơ", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "LC", "id": 29, "color": "#e6157e", "products": [{"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Combo hải sản khô 1kg", "p": 320000}], "sales": 48000000, "orders": 16, "partners": 11}, {"name": "Phan Thị Nhung", "title": "Chủ cơ sở", "company": "CSSX bánh đậu xanh Hương", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TN", "id": 30, "color": "#8e1f6a", "products": [{"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Combo hải sản khô 1kg", "p": 320000}, {"n": "Kẹo dẻo trái cây 250g", "p": 45000}], "sales": 54000000, "orders": 16, "partners": 7}, {"name": "Nguyễn Thị Lựu", "title": "Chủ hộ kinh doanh", "company": "Hộ kinh doanh  Cà phê sinh tố Kiều gia", "addr": "98 Nguyễn Du  ,phường Bàn Thạch ,TP Đã nẵng", "field": "", "phone": "905211345", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TL", "id": 31, "color": "#2a86c4", "products": [{"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}, {"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Combo hải sản khô 1kg", "p": 320000}], "sales": 63000000, "orders": 18, "partners": 7}, {"name": "Trương Thị Thiên Hương", "title": "Chủ hộ kinh doanh", "company": "Nhà hàng Khu vườn nhỏ", "addr": "", "field": "", "phone": "", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TH", "id": 32, "color": "#0a3d78", "products": [{"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Rau câu trái cây 1 khay", "p": 60000}], "sales": 13000000, "orders": 16, "partners": 4}, {"name": "Trương Thị Thùy Lan", "title": "", "company": "Đông trùng hạ thảo", "addr": "", "field": "", "phone": "", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TL", "id": 33, "color": "#2a86c4", "products": [{"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}, {"n": "Combo quà tặng cao cấp", "p": 280000}, {"n": "Set quà doanh nghiệp", "p": 420000}], "sales": 29000000, "orders": 32, "partners": 1}, {"name": "Bùi Thị Hương", "title": "", "company": "CÔNG TY CỔ PHẦN UNICAL FORRICE VIỆT NAM", "addr": "số 160/3 Trần Quí Cáp, TDS  Hòa Thuận, P. Bàn Thạch, TP Đà Nẵng", "field": "CANXI CƠM NHẬT BẢN", "phone": "0913 281 159", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TH", "id": 34, "color": "#8e1f6a", "products": [{"n": "Kẹo dẻo trái cây 250g", "p": 45000}, {"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}, {"n": "Rau câu trái cây 1 khay", "p": 60000}], "sales": 18000000, "orders": 26, "partners": 7}, {"name": "Ngụy Như Thị Bích Trâm", "title": "CT HĐQT", "company": "- Công ty Bảo hiểm Toàn Cầu (bảo hiểm phi nhân thọ)", "addr": "Lô A44 Lê Duẩn - Phường An Mỹ - Tam Kỳ - Quảng Nam", "field": "- Bảo hiểm phi nhân thọ - Sâm, Yến dược liệu", "phone": "0799 336 979", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "BT", "id": 35, "color": "#2a86c4", "products": [{"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 53000000, "orders": 31, "partners": 13}, {"name": "Lương Thị Phương Lan", "title": "Chủ cơ sở", "company": "Cơ sở SX và KD dược liệu Thiên Duyên", "addr": "Thôn 2, xã Trà Linh, huyện Nam Trà My, Quảng Nam", "field": "Chuyên cung cấp Sâm Ngọc Linh, Nấm Lim Xanh và dược liệu bà con vùng cao", "phone": "0977 740 468", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "PL", "id": 36, "color": "#c00f68", "products": [{"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}], "sales": 24000000, "orders": 10, "partners": 1}, {"name": "Đinh Thị Đoan Hương", "title": "Giám đốc", "company": "Cty TNHH Phát triển giáo dục sớm Monties Group", "addr": "151/15 Tôn Đản, Phường An Khê, TP Đà Nẵng", "field": "Dịch vụ chăm sóc giáo dục trẻ mầm non từ 6 tháng đến 5 tuổi, đào tạo, tư vấn, nhượng quyền, hỗ trợ set up mở trường mầm non, các khóa đào tạ", "phone": "0987 099 086", "cat": "Ẩm thực", "emoji": "🍱", "ini": "ĐH", "id": 37, "color": "#8e1f6a", "products": [{"n": "Rau câu trái cây 1 khay", "p": 60000}, {"n": "Bánh đậu xanh hộp quà", "p": 75000}, {"n": "Combo hải sản khô 1kg", "p": 320000}], "sales": 79000000, "orders": 32, "partners": 12}, {"name": "Nguyễn Thị Hoa", "title": "Giám đốc kinh doanh", "company": "CTY CP Cây xanh Trương Tiền", "addr": "Đối diện KCN chợ Được Bình Phục, xã Thăng Bình, Tp Đà Nẵng", "field": "Chuyên cung cấp cây giống, cây cảnh, cây công trình bóng mát, thùng rác gia đình, giỏ nhựa, môi trường toàn quốc", "phone": "0931 815 454", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TH", "id": 38, "color": "#e6157e", "products": [{"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}], "sales": 5000000, "orders": 2, "partners": 4}, {"name": "Đinh Thị Ba", "title": "Thành viên", "company": "Câu Lạc bộ chăm sóc sức khỏe và sắc đẹp", "addr": "41-51 Lê Văn Hưu, Phường Hương Trà, Tp ĐN", "field": "Chăm sóc sức khỏe và sắc đẹp", "phone": "0702 675 135", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "TB", "id": 39, "color": "#8e1f6a", "products": [{"n": "Buổi tập cá nhân PT", "p": 250000}, {"n": "Liệu trình chăm sóc da mặt", "p": 500000}, {"n": "Gói gội đầu dưỡng sinh", "p": 150000}], "sales": 6000000, "orders": 18, "partners": 7}, {"name": "Lê Thị Ngọc Tầm", "title": "Giám đốc", "company": "HTX nước mắm Ngọc lan Quảng Nam", "addr": "Làng Bích Họa Tam Thanh, Phường Quảng Phú, TP ĐN", "field": "- SX và kinh doanh nước mắm truyền thồng, hải sản khô - Phối hợp các đơn vị, trung tâm, trường học tổ chức hoạt động trải nghiệm cho học sin", "phone": "0905 459 252", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "NT", "id": 40, "color": "#1565c0", "products": [{"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Gạo quê sạch 5kg", "p": 150000}], "sales": 36000000, "orders": 36, "partners": 14}, {"name": "Dương Thị Kim Chi", "title": "Chủ hộ kinh doanh", "company": "HKD Yến sào nam Hội An", "addr": "Thôn Ngọc Sơn Tây, xã Thăng Bình, Tp Đà Nẵng", "field": "Chuyên cung cấp tổ yến thô, yến tinh chế, yến tươi, yến chưng, tổ yến nhà nuôi", "phone": "0932 567 352", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "KC", "id": 41, "color": "#8e1f6a", "products": [{"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}], "sales": 77000000, "orders": 35, "partners": 14}, {"name": "Huỳnh Thị Thu Thủy", "title": "Người sáng lập thương hiệu Bà Ba Hội", "company": "Công ty CP thực phẩm quốc tế Trường Xuân", "addr": "Thôn Khương Mỹ, xã Tam Xuân, Tp Đà Nẵng", "field": "Chuyên SX, chế biến các loại bánh truyền thống từ nếp, thủy hải sản", "phone": "0905 222 698", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TT", "id": 42, "color": "#8e1f6a", "products": [{"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 59000000, "orders": 13, "partners": 1}, {"name": "Thái Thị Trọng", "title": "Chủ cơ sở", "company": "Trang SPA", "addr": "42 Nguyễn Sinh Sắc, Phường Tam Kỳ, Tp ĐN", "field": "Chăm sóc da, kinh doanh mỹ phẩm, thông dịch viên tiếng Hàn", "phone": "0359 291 109", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "TT", "id": 43, "color": "#0d72ab", "products": [{"n": "Combo mỹ phẩm dưỡng da", "p": 320000}, {"n": "Liệu trình chăm sóc da mặt", "p": 500000}, {"n": "Buổi tập cá nhân PT", "p": 250000}], "sales": 18000000, "orders": 37, "partners": 2}, {"name": "Lê Thị Hà", "title": "Chủ cơ sở", "company": "HTX Nông nghiệp Hà Quang Minh", "addr": "Phường Quảng Phú, Tp ĐN", "field": "Sản xuất nông nghiệp, bột bánh xèo, bánh tráng, gạo quê", "phone": "0784 940 588", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TH", "id": 44, "color": "#1b9cd8", "products": [{"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}], "sales": 16000000, "orders": 37, "partners": 2}, {"name": "Phạm Bích Hà", "title": "Chủ tịch HĐQT", "company": "HTX Du lịch cộng đồng Hương Trà", "addr": "Phường Hương Trà, Tp ĐN", "field": "Du lịch sinh thái cộng đồng", "phone": "0914 223 776", "cat": "Du lịch", "emoji": "🏝️", "ini": "BH", "id": 45, "color": "#0d72ab", "products": [{"n": "Tour sinh thái cộng đồng", "p": 450000}, {"n": "Trải nghiệm làng quê / khách", "p": 250000}], "sales": 8000000, "orders": 8, "partners": 15}, {"name": "Lê Thị Thanh Sâm", "title": "Người sáng lập", "company": "Phòng tập thông minh SKYFIT", "addr": "17 Chiến Thắng, Tam Kỳ, Quảng Nam", "field": "Chuyên giảm cân, tăng cân, cải thiện vóc dáng và sức khỏe chủ động", "phone": "0762 610 297", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "TS", "id": 46, "color": "#0a3d78", "products": [{"n": "Liệu trình chăm sóc da mặt", "p": 500000}, {"n": "Combo mỹ phẩm dưỡng da", "p": 320000}], "sales": 44000000, "orders": 34, "partners": 7}, {"name": "Nguyễn Thị Bích Lài", "title": "GĐ phát triển thị trường", "company": "CTY TNHH Thương Mại và SX Sâm Nữ Hoàng", "addr": "84 Lê Duẫn, TP Tam Kỳ Quảng Nam", "field": "Chuyên Trà túi lọc, Trà kết hợp Hương vị táo, gừng, quế, cao, kẹo, bột thạch sâm nữ hoàng, nước uống bổ dưỡng, mỹ phẩm làm đẹp", "phone": "", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "BL", "id": 47, "color": "#0d72ab", "products": [{"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Nấm lim xanh khô 100g", "p": 680000}], "sales": 67000000, "orders": 17, "partners": 9}, {"name": "Hồ Thị Mỹ Huyền", "title": "chủ HKD", "company": "Siêu Thị Sách Tam Kỳ", "addr": "51 Nguyễn Văn Trỗi- Bàn Thạch - Đà Nẵng", "field": "Cung cấp văn phòng phẩm", "phone": "0334.233.828", "cat": "Giáo dục", "emoji": "📚", "ini": "MH", "id": 48, "color": "#2a86c4", "products": [{"n": "Khoá đào tạo nuôi dạy con", "p": 1500000}, {"n": "Học phí mầm non / tháng", "p": 2500000}, {"n": "Bộ sách kỹ năng cho bé", "p": 180000}], "sales": 18000000, "orders": 27, "partners": 15}, {"name": "Lê Trần Thị Ái Châu", "title": "chủ HKD", "company": "Thảo mộc thiên nhiên Má Hạnh", "addr": "phường Quảng Phú, TP Đà Nẵng", "field": "Cung cấp Dầu gội thảo mộc , sửa rửa mặt , Dung dịch vệ sinh,...", "phone": "986443616", "cat": "Thủ công & Nội thất", "emoji": "🪵", "ini": "ÁC", "id": 49, "color": "#8e1f6a", "products": [{"n": "Bàn gỗ tự nhiên", "p": 3500000}, {"n": "Kệ gỗ mỹ nghệ", "p": 650000}, {"n": "Túi tái chế thời trang", "p": 180000}], "sales": 12000000, "orders": 15, "partners": 10}, {"name": "Huỳnh Thị Thu Thanh", "title": "Kế toán trưởng", "company": "Xưởng mộc Khánh Phong", "addr": "Thôn địch Tây, xã tiên Phước, Đà Nẵng", "field": "Chuyên sp gỗ nội thất và gỗ mỹ nghệ", "phone": "774411559", "cat": "Thủ công & Nội thất", "emoji": "🪵", "ini": "TT", "id": 50, "color": "#1b9cd8", "products": [{"n": "Bàn gỗ tự nhiên", "p": 3500000}, {"n": "Túi tái chế thời trang", "p": 180000}], "sales": 21000000, "orders": 18, "partners": 5}, {"name": "Huỳnh Thị Kiều Tho (Bé Nấm)", "title": "chủ hộ kinh doanh", "company": "HKD Hương Quế Trà My", "addr": "420 Phan Châu Trinh- Tam Kỳ", "field": "Hương quế, Trầm hương, Vòng tay", "phone": "988.448.663", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "KT", "id": 51, "color": "#1565c0", "products": [{"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Nấm lim xanh khô 100g", "p": 680000}], "sales": 23000000, "orders": 16, "partners": 6}, {"name": "Phan Thị Hiền", "title": "Giám đốc", "company": "HTX Nông sản và thực phẩm xanh King Thịnh Phát", "addr": "tổ 7, Nam Hà - Thăng An - Đà Nẵng", "field": "Sản xuất và kinh doanh Kẹo dẻo trái cây - Rau câu - ăn vặt", "phone": "", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TH", "id": 52, "color": "#1565c0", "products": [{"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}], "sales": 28000000, "orders": 24, "partners": 11}, {"name": "Hoàng Thị Tính", "title": "chủ hộ kinh doanh", "company": "HKD sản xuất bột khoai lang tím Bisa food", "addr": "tổ 4,thôn Tây Giang, xã Thanh Truờng, thành phố Đà Nẵng", "field": "Chuyên sản phẩm bột khoai lang tím Bisa food", "phone": "975737239", "cat": "Tiêu dùng", "emoji": "🛍️", "ini": "TT", "id": 53, "color": "#8e1f6a", "products": [{"n": "Set quà doanh nghiệp", "p": 420000}, {"n": "Sản phẩm tiêu dùng gia đình", "p": 150000}], "sales": 5000000, "orders": 23, "partners": 15}, {"name": "Pham Thị Thu Thúy", "title": "giám đốc", "company": "cty tnhh thực phẩm thương mại Tam kỳ Food", "addr": "Trụ sở chính : xuân Tây p Ta’m kỳ tp . Đn", "field": "Yến sào takynest", "phone": "358542889", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TT", "id": 54, "color": "#8e1f6a", "products": [{"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}], "sales": 69000000, "orders": 20, "partners": 3}, {"name": "Nguyễn Thị Lệ Huyền", "title": "Giám đốc", "company": "Công ty In & Phát hành sách Quảng Nam", "addr": "260 Hùng Vương - Phường Tam Kỳ - TP Đà Nẵng", "field": "", "phone": "913422337", "cat": "Giáo dục", "emoji": "📚", "ini": "LH", "id": 55, "color": "#0a3d78", "products": [{"n": "Bộ sách kỹ năng cho bé", "p": 180000}, {"n": "Học phí mầm non / tháng", "p": 2500000}], "sales": 13000000, "orders": 18, "partners": 9}, {"name": "Nguyễn Uyên Thao", "title": "Tổng giám đốc", "company": "Công ty TNHH TM & SX Đồng Phục Việt Nam", "addr": "119 Nguyễn Huy Tưởng, Hoà Khánh, Đà Nẵng", "field": "", "phone": "915333649", "cat": "In ấn & Thiết kế", "emoji": "🖨️", "ini": "UT", "id": 56, "color": "#e6157e", "products": [{"n": "In name card 1 hộp", "p": 90000}, {"n": "Thiệp cưới cao cấp 100c", "p": 850000}], "sales": 19000000, "orders": 29, "partners": 9}, {"name": "Huỳnh Thị Bích Trâm", "title": "Chủ cơ sở", "company": "Trâm Moon Spa & Clinic", "addr": "246 Hùng Vương - Tam Kỳ", "field": "Chuyên : Chăm sóc, điều trị da khoa học - Gội đầu dưỡng sinh", "phone": "975111989", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "BT", "id": 57, "color": "#1565c0", "products": [{"n": "Combo mỹ phẩm dưỡng da", "p": 320000}, {"n": "Gói gội đầu dưỡng sinh", "p": 150000}, {"n": "Buổi tập cá nhân PT", "p": 250000}, {"n": "Liệu trình chăm sóc da mặt", "p": 500000}], "sales": 14000000, "orders": 19, "partners": 2}, {"name": "Trần Thị Mỹ Duyên", "title": "Giám đốc", "company": "- CÔNG TY CỔ PHẦN SẢN XUẤT, THƯƠNG MẠI VÀ DỊCH VỤ NFC68", "addr": "Trụ sở chính: 17 Trần Cao Vân, Tam Kỳ", "field": "Chuyên: F&B (Nhà hàng hải sản) & Sản xuất, thi công nội thất (Tủ, giường, bàn ghế…", "phone": "0906 558 325", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "MD", "id": 58, "color": "#1b9cd8", "products": [{"n": "Nước mắm truyền thống 500ml", "p": 85000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Gạo quê sạch 5kg", "p": 150000}], "sales": 5000000, "orders": 7, "partners": 9}, {"name": "Nguyễn Thị Thu Tâm", "title": "Phó Giám đốc", "company": "BIDV Quảng Nam", "addr": "112 Phan Bội Châu, Phường Bàn Thạch, TP Đà Nẵng", "field": "Chuyên ngành: Tài chính - Ngân hàng", "phone": "0903.552.999", "cat": "Tài chính & Pháp lý", "emoji": "💼", "ini": "TT", "id": 59, "color": "#e6157e", "products": [{"n": "Tư vấn tài chính cá nhân", "p": 300000}, {"n": "Tư vấn pháp lý DN / buổi", "p": 500000}], "sales": 11000000, "orders": 18, "partners": 4}, {"name": "Nguyễn Thị Bảo Ân", "title": "chủ HKD", "company": "HKD Bảo Ân Cosmetic (Mỹ phẩm Bảo Ân)", "addr": "156 Hùng Vương, Phường Tam Kỳ, TP Đà Nẵng", "field": "Chuyên: Kinh doanh các loại mỹ phẩm", "phone": "0924888894", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "BÂ", "id": 60, "color": "#1b9cd8", "products": [{"n": "Liệu trình chăm sóc da mặt", "p": 500000}, {"n": "Combo mỹ phẩm dưỡng da", "p": 320000}, {"n": "Gói gội đầu dưỡng sinh", "p": 150000}, {"n": "Buổi tập cá nhân PT", "p": 250000}], "sales": 19000000, "orders": 4, "partners": 8}, {"name": "Nguyễn Thị Lan", "title": "Giám đốc", "company": "CTTNHH ECOTHREAD DNXH", "addr": "thôn cây sanh, xã Phú Ninh, Đà Nẵng", "field": "huyên: sản phẩm tái chế như túi xách từ bao thức ăn gia súc, vải vụn , jean, ...", "phone": "0374678879", "cat": "Thủ công & Nội thất", "emoji": "🪵", "ini": "TL", "id": 61, "color": "#1b9cd8", "products": [{"n": "Bàn gỗ tự nhiên", "p": 3500000}, {"n": "Túi tái chế thời trang", "p": 180000}], "sales": 9000000, "orders": 13, "partners": 7}, {"name": "Phạm Thị Thanh Thuỷ", "title": "Chủ Hộ kinh doanh", "company": "Rau câu Thanh Thuỷ", "addr": "Khối phố Hoà Trung, phường Quảng Phú, Đà Nẵng", "field": "Bánh rau câu các loại …", "phone": "0965411498", "cat": "Ẩm thực", "emoji": "🍱", "ini": "TT", "id": 62, "color": "#e6157e", "products": [{"n": "Kẹo dẻo trái cây 250g", "p": 45000}, {"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Combo hải sản khô 1kg", "p": 320000}], "sales": 40000000, "orders": 30, "partners": 6}, {"name": "Nguyễn Thị Kim Ngân", "title": "Chủ hộ kinh doanh", "company": "Bếp Mẹ Sên", "addr": "Kp: Hoà Thượng, phường Quảng phú", "field": "Chuyên: Bán chả cá, cá khô, cá 1 nắng", "phone": "0935313098", "cat": "Ẩm thực", "emoji": "🍱", "ini": "KN", "id": 63, "color": "#c00f68", "products": [{"n": "Chả cá Quảng 500g", "p": 95000}, {"n": "Bánh dừa nướng đặc sản", "p": 55000}, {"n": "Kẹo dẻo trái cây 250g", "p": 45000}], "sales": 7000000, "orders": 2, "partners": 1}, {"name": "Lê Thị Hồng Trinh", "title": "Giám đốc", "company": "Công ty TNHH An Yên Phát", "addr": "- Nhà hàng Sen 36  Trần Phú, Phường Bàn Thạch.", "field": "Chuyên: Kinh doanh nhà hàng, quán ăn, spa.", "phone": "0935881179", "cat": "Spa & Làm đẹp", "emoji": "💆", "ini": "HT", "id": 64, "color": "#2a86c4", "products": [{"n": "Buổi tập cá nhân PT", "p": 250000}, {"n": "Liệu trình chăm sóc da mặt", "p": 500000}, {"n": "Combo mỹ phẩm dưỡng da", "p": 320000}], "sales": 16000000, "orders": 29, "partners": 16}, {"name": "Nguyễn Phan Nhật Thuyền (Bé Na)", "title": "Chủ quán / Chủ công ty", "company": "Công ty TNHH Phát Linh Gia (Nhà hàng Thủy Bờ Kênh)", "addr": "B1 Bạch Đằng, Tam kỳ", "field": "Ngành nghề sản xuất/ kinh doanh: F&B", "phone": "0934854851", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "NT", "id": 65, "color": "#0d72ab", "products": [{"n": "Trà thảo mộc túi lọc", "p": 120000}, {"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}], "sales": 46000000, "orders": 14, "partners": 5}, {"name": "Trương Nguyên Tiến Trà", "title": "Tổng Giám Đốc", "company": "Công Ty Cổ phần Dược liệu Trà Linh", "addr": "Thôn 2, Trà Linh, Tp Đà Nẵng", "field": "Ngành nghề kinh doanh : Trồng và Sản Xuất tất cá sản phẩm về Sâm Ngọc Linh", "phone": "0963873777", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "TT", "id": 66, "color": "#e6157e", "products": [{"n": "Gạo quê sạch 5kg", "p": 150000}, {"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Yến chưng sẵn hộp 6 hũ", "p": 390000}, {"n": "Trà thảo mộc túi lọc", "p": 120000}], "sales": 12000000, "orders": 18, "partners": 14}, {"name": "Huỳnh Thị Minh Ngọc", "title": "Giám đốc", "company": "HTX MỘC NGUYÊN BIOFARM", "addr": "Xã Đức Phú, Tp ĐÀ NẴNG", "field": "Trồng , sản xuất DV  thương mại Sâm Thủy Tổ", "phone": "0389 260 167", "cat": "Nông sản & Dược liệu", "emoji": "🌿", "ini": "MN", "id": 67, "color": "#8e1f6a", "products": [{"n": "Sâm Ngọc Linh ngâm mật ong", "p": 1250000}, {"n": "Nấm lim xanh khô 100g", "p": 680000}, {"n": "Nước mắm truyền thống 500ml", "p": 85000}], "sales": 67000000, "orders": 20, "partners": 8}];
+const CATS=[['Tất cả','✨'],['Nông sản & Dược liệu','🌿'],['Ẩm thực','🍱'],['Spa & Làm đẹp','💆'],['Giáo dục','📚'],['In ấn & Thiết kế','🖨️'],['Tài chính & Pháp lý','💼'],['Thủ công & Nội thất','🪵'],['Du lịch','🏝️'],['Tiêu dùng','🛍️']];
+const SCREENS=[['login','Đăng nhập'],['home','Trang chủ'],['directory','Danh bạ'],['profile','Hồ sơ DN'],['storefront','Gian hàng'],['shop','Mua sắm'],['product','Chi tiết SP'],['cart','Đặt mua'],['orders','Đơn của tôi'],['sellerorders','Đơn bán'],['leaderboard','Xếp hạng'],['admin','Quản trị']];
+let histStack=['login'];
+
+/* ---- Thông tin chuyển khoản người bán (dữ liệu demo, sinh tự động theo hội viên) ---- */
+const BANKS=[['VCB','Vietcombank'],['BIDV','BIDV'],['TCB','Techcombank'],['MB','MB Bank'],['ACB','ACB'],['VPB','VPBank'],['STB','Sacombank'],['VIB','VIB'],['AGRIBANK','Agribank']];
+function noDia(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D');}
+M.forEach(m=>{
+  const b=BANKS[m.id%BANKS.length];
+  const acc=String(19000000000+(m.id*8237591)%89999999999).slice(0,12);
+  m.bank={code:b[0],name:b[1],acc:acc,holder:noDia(m.name).toUpperCase()};
+});
+function copyText(t,el){try{navigator.clipboard&&navigator.clipboard.writeText(t);}catch(e){}if(el){const o=el.textContent;el.textContent='✓ Đã chép';setTimeout(()=>el.textContent=o,1200);}}
+function qrURL(m,amount,info){return `https://img.vietqr.io/image/${m.bank.code}-${m.bank.acc}-compact2.png?amount=${amount||''}&addInfo=${encodeURIComponent(info||'')}&accountName=${encodeURIComponent(m.bank.holder)}`;}
+function bankCard(m,amount,info,withQR){
+  return `<div class="mcard" style="flex-direction:column;align-items:stretch;gap:9px;cursor:default">
+    <div class="label" style="margin:0;color:var(--rose-d)">💳 Thông tin chuyển khoản người bán</div>
+    <div class="r" style="display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Ngân hàng</span><b>${m.bank.name}</b></div>
+    <div class="r" style="display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Số tài khoản</span><span><b>${m.bank.acc}</b> <span class="chip sm" style="cursor:pointer" onclick="copyText('${m.bank.acc}',this)">Sao chép</span></span></div>
+    <div class="r" style="display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Chủ tài khoản</span><b>${m.bank.holder}</b></div>
+    ${amount?`<div class="r" style="display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Số tiền</span><b class="price">${vnd(amount)}</b></div>`:''}
+    ${withQR?`<div class="divider"></div><div style="text-align:center"><img src="${qrURL(m,amount,info)}" alt="Mã VietQR" style="width:172px;height:172px;border-radius:12px;border:1px solid var(--line);background:#fff" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div style="display:none;font-size:11px" class="muted">Mã VietQR hiển thị khi mở online</div><div class="muted" style="font-size:11px;margin-top:4px">Quét mã bằng app ngân hàng để chuyển nhanh</div></div>`:''}
+  </div>`;
+}
+
+function vnd(x){return x.toLocaleString('vi-VN')+'đ';}
+function vshort(x){if(x>=1e9)return (x/1e9).toFixed(1).replace('.0','')+' tỷ';if(x>=1e6)return Math.round(x/1e6)+' triệu';return vnd(x);}
+function pemoji(c){const o={'Nông sản & Dược liệu':'🌿','Ẩm thực':'🍜','Spa & Làm đẹp':'💆','Giáo dục':'📚','In ấn & Thiết kế':'🖨️','Tài chính & Pháp lý':'💼','Thủ công & Nội thất':'🪵','Du lịch':'🏝️','Tiêu dùng':'🎁'};return o[c]||'🛍️';}
+
+function go(s,push=true){
+  document.querySelectorAll('.screen').forEach(e=>e.classList.toggle('active',e.dataset.s===s));
+  document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.s===s));
+  document.getElementById('vp').scrollTop=0;
+  document.body.dataset.screen=s;
+  if(window.__navready)setNav(s);
+  if(push && histStack[histStack.length-1]!==s) histStack.push(s);
+  if(s==='cart') renderCart();
+}
+function back(){ if(histStack.length>1){histStack.pop();go(histStack[histStack.length-1],false);} }
+
+// toolbar
+document.getElementById('toolbar').innerHTML=SCREENS.map(([s,t])=>`<button data-s="${s}" onclick="go('${s}')">${t}</button>`).join('');
+
+// nav templates
+const NAV={home:0,shop:1,cart:2,orders:3,me:4};
+function navHTML(active){
+  const items=[['🏠','Trang chủ','home'],['🛍️','Mua sắm','shop'],['🛒','Giỏ','cart'],['📦','Đơn','orders'],['👤','Tôi','storefront']];
+  return items.map((it,i)=>`<div class="${NAV[active]===i?'on':''}" onclick="go('${it[2]}')"><span class="ni">${it[0]}</span>${it[1]}</div>`).join('');
+}
+document.querySelectorAll('[data-nav]').forEach(n=>n.innerHTML=navHTML(n.dataset.nav));
+
+// product card
+function prodCard(m,p){
+  return `<div class="prod" onclick="openProduct(${m.id},'${p.n.replace(/'/g,"")}',${p.p})">
+    <div class="pi" style="background:linear-gradient(135deg,${m.color},#0a3d78)">${pemoji(m.cat)}</div>
+    <div class="pd"><div class="pn">${p.n}</div><div class="pp">${vnd(p.p)}</div><div class="ps">${m.company}</div></div>
+  </div>`;
+}
+function memberCard(m){
+  return `<div class="mcard" onclick="openProfile(${m.id})">
+    <div class="av" style="background:${m.color}">${m.ini}</div>
+    <div class="mc-body"><div class="mc-name">${m.company}</div>
+    <div class="mc-sub">${m.name} · ${m.title||'Hội viên'}</div>
+    <span class="chip sm">${m.emoji} ${m.cat}</span></div>
+    <div class="mc-arr">›</div></div>`;
+}
+
+// HOME
+function fillHome(){
+  const total=M.reduce((a,m)=>a+m.sales,0), tx=M.reduce((a,m)=>a+m.orders,0);
+  document.getElementById('h-rev').textContent=vshort(total);
+  document.getElementById('h-tx').textContent=tx;
+  let fp=[];M.forEach(m=>m.products.forEach(p=>fp.push([m,p])));
+  fp.sort(()=>Math.random()-.5);
+  document.getElementById('home-prods').innerHTML=fp.slice(0,6).map(([m,p])=>prodCard(m,p)).join('');
+}
+
+// DIRECTORY
+var dirCat='Tất cả';
+function fillDir(){
+  document.getElementById('dir-chips').innerHTML=CATS.map(([c,e])=>`<div class="chip ${c===dirCat?'on':''}" onclick="dirCat='${c}';fillDir()">${e} ${c}</div>`).join('');
+  const list=M.filter(m=>dirCat==='Tất cả'||m.cat===dirCat);
+  document.getElementById('dir-count').textContent=list.length+' hội viên';
+  document.getElementById('dir-list').innerHTML=list.map(memberCard).join('');
+}
+
+// SHOP
+function fillShop(){
+  document.getElementById('shop-cats').innerHTML=CATS.slice(1).concat([['Tất cả','⋯']]).map(([c,e])=>`<div class="c" onclick="go('directory')"><div class="ci">${e}</div>${c}</div>`).join('');
+  let fp=[];M.forEach(m=>m.products.forEach(p=>fp.push([m,p])));
+  fp.sort(()=>Math.random()-.5);
+  document.getElementById('shop-prods').innerHTML=fp.slice(0,12).map(([m,p])=>prodCard(m,p)).join('');
+}
+
+// PROFILE
+function openProfile(id){
+  const m=M[id];
+  const prods=m.products.map(p=>`<div class="prod" onclick="openProduct(${m.id},'${p.n.replace(/'/g,"")}',${p.p})"><div class="pi" style="height:74px;font-size:26px;background:linear-gradient(135deg,${m.color},#0a3d78)">${pemoji(m.cat)}</div><div class="pd"><div class="pn" style="height:auto">${p.n}</div><div class="pp">${vnd(p.p)}</div></div></div>`).join('');
+  document.getElementById('profile-body').innerHTML=`
+    <div style="display:flex;gap:13px;align-items:center">
+      <div class="av" style="width:60px;height:60px;font-size:20px;border-radius:16px;background:${m.color}">${m.ini}</div>
+      <div style="min-width:0"><div style="font-weight:800;font-size:15px">${m.company}</div>
+      <div class="muted">${m.name} · ${m.title||'Hội viên'}</div>
+      <span class="chip sm" style="margin-top:4px;display:inline-block">${m.emoji} ${m.cat}</span></div>
+    </div>
+    <div class="contact"><div class="b call">📞 Gọi điện</div><div class="b zalo">💬 Zalo</div></div>
+    <div class="mcard" style="flex-direction:column;align-items:stretch;gap:8px;cursor:default">
+      ${m.field?`<div><div class="label" style="margin:0">Lĩnh vực hoạt động</div><div style="font-size:12.5px;margin-top:4px">${m.field}</div></div>`:''}
+      ${m.addr?`<div class="divider"></div><div><div class="label" style="margin:0">Địa chỉ</div><div style="font-size:12.5px;margin-top:4px">📍 ${m.addr}</div></div>`:''}
+      ${m.phone?`<div class="divider"></div><div><div class="label" style="margin:0">Điện thoại</div><div style="font-size:12.5px;margin-top:4px">📱 ${m.phone}</div></div>`:''}
+    </div>
+    ${bankCard(m,0,'',false)}
+    <div class="sectt">Gian hàng (${m.products.length} sản phẩm)</div>
+    <div class="pgrid">${prods}</div>
+    <button class="btn block" onclick="go('shop')">🛍️ Xem gian hàng & đặt mua</button>`;
+  go('profile');
+}
+
+// STOREFRONT
+function fillStore(){
+  const m=M[0];
+  document.getElementById('store-list').innerHTML=M[0].products.concat(M[5].products).slice(0,4).map(p=>
+    `<div class="mcard" style="cursor:default"><div class="av" style="border-radius:12px;background:linear-gradient(135deg,var(--rose),var(--plum))">${pemoji(M[0].cat)}</div>
+    <div class="mc-body"><div class="mc-name">${p.n}</div><div class="mc-sub">${vnd(p.p)}</div><span class="badge b-ok">Đang hiển thị</span></div></div>`).join('');
+}
+
+// PRODUCT
+let curProd=null;
+function openProduct(id,name,price){
+  const m=M[id];curProd={m,name,price};
+  document.getElementById('product-body').innerHTML=`
+    <div class="prod" style="cursor:default"><div class="pi" style="height:200px;font-size:80px;background:linear-gradient(135deg,${m.color},#0a3d78)">${pemoji(m.cat)}</div></div>
+    <div class="pp" style="color:var(--rose-d);font-weight:800;font-size:24px">${vnd(price)}</div>
+    <div style="font-weight:700;font-size:15px">${name}</div>
+    <div class="muted">Sản phẩm của hội viên Hội Nữ Doanh nhân Tam Kỳ. Giá tham khảo — thoả thuận trực tiếp với người bán.</div>
+    <div class="pmember" onclick="openProfile(${m.id})">
+      <div class="av" style="background:${m.color}">${m.ini}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13px">${m.company}</div><div class="muted">Hội viên · ${m.cat}</div></div>
+      <span class="chip sm">Xem shop ›</span></div>
+    <div class="contact"><div class="b call">📞 Gọi</div><div class="b zalo">💬 Zalo</div></div>
+    ${bankCard(m,0,'',false)}
+    <div class="callout">App <b>không giữ tiền</b> — chuyển khoản theo thông tin trên hoặc trả tiền mặt, giao hàng thoả thuận trực tiếp. Đơn hoàn thành được tính vào thống kê của Hội.</div>`;
+  go('product');
+}
+
+// CART
+var cartQty=2;
+function renderCart(){
+  const c=curProd||{m:M[0],name:M[0].products[0].n,price:M[0].products[0].p};
+  const tot=c.price*cartQty;
+  document.getElementById('cart-body').innerHTML=`
+    <div class="mcard" style="cursor:default"><div class="av" style="background:linear-gradient(135deg,${c.m.color},#0a3d78)">${pemoji(c.m.cat)}</div>
+      <div class="mc-body"><div class="mc-name">${c.name}</div><div class="mc-sub">${c.m.company}</div><div class="price">${vnd(c.price)}</div></div>
+      <div class="qty"><button onclick="cartQty=Math.max(1,cartQty-1);renderCart()">−</button><span>${cartQty}</span><button onclick="cartQty++;renderCart()">+</button></div>
+    </div>
+    <div class="label">Ghi chú cho người bán</div>
+    <input class="field" placeholder="VD: giao chiều thứ 7, gói quà tặng…">
+    <div class="mcard" style="flex-direction:column;align-items:stretch;gap:8px;cursor:default">
+      <div class="r" style="display:flex;justify-content:space-between"><span class="muted">Phương thức</span><b style="font-size:12.5px">Chuyển khoản / tiền mặt</b></div>
+      <div class="divider"></div>
+      <div class="r" style="display:flex;justify-content:space-between"><span>Tổng tạm tính</span><b class="price" style="font-size:16px">${vnd(tot)}</b></div>
+    </div>
+    ${bankCard(c.m,tot,'Don hang '+c.name,true)}
+    <div class="callout"><b>App không giữ tiền.</b> Chuyển khoản theo thông tin trên (hoặc trả khi nhận hàng). "Gửi đơn" tạo bản ghi giao dịch ở trạng thái <i>chờ người bán xác nhận</i>.</div>`;
+}
+function orderPlaced(){
+  alert('✅ Đã gửi đơn cho người bán!\\n\\nĐơn đang ở trạng thái "Chờ người bán xác nhận". Khi người bán bấm Hoàn thành, đơn sẽ tự động được tính vào thống kê của Hội.');
+  go('orders');
+}
+
+// ORDERS buyer
+function fillOrders(){
+  const data=[
+    [M[8],'×2','Chờ shop XN','b-wait','17/06',300000,'Đã nhận hàng'],
+    [M[2],'×1','Đang giao','b-go','15/06',500000,'Đã nhận hàng'],
+    [M[12],'×1','Hoàn thành','b-ok','12/06',90000,null],
+    [M[20],'×3','Hoàn thành','b-ok','08/06',165000,null],
+  ];
+  document.getElementById('orders-list').innerHTML=data.map(([m,q,st,cl,d,pr,act])=>`
+    <div class="ocard"><div class="r"><span class="shop">${m.company}</span><span class="badge ${cl}">${st}</span></div>
+    <div class="muted">${m.products[0].n} ${q}</div>
+    <div class="r"><span class="muted">${d}</span><span class="price">${vnd(pr)}</span></div>
+    ${act?`<button class="btn sm ghost" style="align-self:flex-end" onclick="this.outerHTML='<span class=\\'badge b-ok\\'>✓ Đã xác nhận</span>'">${act}</button>`:''}</div>`).join('');
+}
+
+// SELLER
+function fillSeller(){
+  document.getElementById('seller-list').innerHTML=`
+    <div class="ocard"><div class="r"><span class="shop">🔔 Chị Lê Thị Nguyệt đặt mua</span><span class="badge b-wait">Mới</span></div>
+      <div class="muted">Sâm Ngọc Linh ngâm mật ong ×2 · 17/06</div>
+      <div class="r"><span class="price">2.500.000đ</span></div>
+      <div class="btnrow"><button class="btn sm" onclick="alert('✓ Đã xác nhận đơn')">✓ Xác nhận</button><button class="btn sm ghost">Từ chối</button></div></div>
+    <div class="ocard"><div class="r"><span class="shop">Chị Nguyễn Thị My Sa</span><span class="badge b-go">Đang giao</span></div>
+      <div class="muted">Combo hải sản khô ×1 · 320.000đ</div>
+      <button class="btn sm" onclick="alert('✓ Đã đánh dấu Hoàn thành — đơn được tính vào doanh số')">✓ Đánh dấu Hoàn thành</button></div>`;
+}
+
+// LEADERBOARD
+function fillLB(){
+  const top=[...M].sort((a,b)=>b.sales-a.sales).slice(0,12);
+  document.getElementById('lb-list').innerHTML=top.map((m,i)=>`
+    <div class="rank ${i<3?'top'+(i+1):''}" onclick="openProfile(${m.id})">
+      <div class="pos">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+      <div class="av" style="width:34px;height:34px;font-size:12px;background:${m.color}">${m.ini}</div>
+      <div class="rn"><div class="nm">${m.company}</div><div class="sub">${m.partners} đối tác · ${m.orders} GD</div></div>
+      <div class="val">${vshort(m.sales)}</div></div>`).join('');
+}
+
+// ADMIN
+function fillAdmin(){
+  const total=M.reduce((a,m)=>a+m.sales,0), tx=M.reduce((a,m)=>a+m.orders,0);
+  document.getElementById('ad-rev').textContent=vshort(total);
+  document.getElementById('ad-tx').textContent=tx;
+  document.getElementById('ad-mem').textContent=M.length;
+  const h=[40,55,48,72,65,90];
+  document.getElementById('ad-bars').innerHTML=h.map((v,i)=>`<div class="bar" style="height:${v}%"><span>T${i+1}</span></div>`).join('');
+}
+
+// init all
+fillHome();fillDir();fillShop();fillStore();fillOrders();fillSeller();fillLB();fillAdmin();
+go('login',false);histStack=['login'];
+
+/* ---- webapp global navigation (sidebar + bottom tabs) ---- */
+const SICONS={login:'🔐',home:'🏠',directory:'📒',profile:'🪪',storefront:'🏬',shop:'🛍️',product:'🏷️',cart:'🛒',orders:'📦',sellerorders:'🧾',leaderboard:'🏆',admin:'📊'};
+const SIDEBAR_ITEMS=['home','shop','directory','leaderboard','orders','sellerorders','storefront','admin'];
+const TABS=[['home','🏠','Trang chủ'],['shop','🛍️','Mua sắm'],['cart','🛒','Giỏ'],['orders','📦','Đơn'],['storefront','👤','Tôi']];
+const TABMAP={home:'home',shop:'shop',product:'shop',directory:'home',profile:'home',leaderboard:'home',admin:'home',cart:'cart',orders:'orders',sellerorders:'storefront',storefront:'storefront'};
+function buildNav(){
+  document.getElementById('side-nav').innerHTML=SIDEBAR_ITEMS.map(s=>{
+    const t=SCREENS.find(x=>x[0]===s)[1];
+    return `<div class="snav" data-s="${s}" onclick="go('${s}')"><span class="si">${SICONS[s]}</span>${t}</div>`;
+  }).join('');
+  document.getElementById('tabbar').innerHTML=TABS.map(([s,i,t])=>`<div data-tab="${s}" onclick="go('${s}')"><span class="ni">${i}</span>${t}</div>`).join('');
+}
+function setNav(s){
+  document.querySelectorAll('#side-nav .snav').forEach(n=>n.classList.toggle('on',n.dataset.s===s));
+  const t=TABMAP[s];
+  document.querySelectorAll('#tabbar [data-tab]').forEach(n=>n.classList.toggle('on',n.dataset.tab===t));
+}
+buildNav();
+window.__navready=true;
+document.body.dataset.screen='login';
+setNav('login');
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){ navigator.serviceWorker.register('./sw.js').catch(function(){}); });
+}
+</script>
+</body>
+</html>
