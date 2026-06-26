@@ -7,11 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Giao thương HV">
+<meta name="apple-mobile-web-app-title" content="HER MART">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="icon" href="./icon-192.png">
-<title>Sàn Giao thương Hội viên · Nữ Doanh nhân Đà Nẵng</title>
+<title>HER MART · Sàn Giao thương Hội viên · CLB Nữ Doanh nhân Đà Nẵng</title>
 <style>
 
 :root{
@@ -266,10 +266,10 @@ body[data-screen="login"] .sidebar{display:none}
   <aside class="sidebar">
     <div class="brand">
       <div class="lg">👜</div>
-      <div><b>Sàn Giao thương</b><span>Hội Nữ Doanh nhân Đà Nẵng</span></div>
+      <div><b>HER MART</b><span>Chi hội phía Nam · CLB Nữ DN Đà Nẵng</span></div>
     </div>
     <div id="side-nav"></div>
-    <div class="sidehint">Bản demo · dữ liệu 68 hội viên thật. Cài lên điện thoại qua "Thêm vào màn hình chính".</div>
+    <div class="sidehint">HER MART · Sàn Giao thương Hội viên. Cài lên điện thoại qua "Thêm vào màn hình chính".</div>
   </aside>
   <main class="main">
     <div class="viewport" id="vp">
@@ -279,8 +279,8 @@ body[data-screen="login"] .sidebar{display:none}
       <div class="body" style="gap:16px;justify-content:flex-start;padding-top:34px">
         <div class="logo-badge">👜</div>
         <div style="text-align:center">
-          <div style="font-weight:800;font-size:18px;color:var(--rose-d)">Sàn Giao thương Hội viên</div>
-          <div class="muted">Hội Nữ Doanh nhân Tam Kỳ</div>
+          <div style="font-weight:800;font-size:22px;color:var(--rose-d);letter-spacing:.5px">HER MART</div>
+          <div class="muted">Sàn Giao thương Hội viên · Chi hội phía Nam<br>CLB Nữ Doanh nhân Đà Nẵng</div>
         </div>
         <div class="callout" style="text-align:center">Nhập email để nhận <b>link đăng nhập</b> — không cần mật khẩu, không OTP.</div>
         <div class="label">Email của bạn</div>
@@ -297,7 +297,7 @@ body[data-screen="login"] .sidebar{display:none}
 
     <!-- 2 HOME -->
     <div class="screen" data-s="home">
-      <div class="appbar"><div class="ttl">Sàn Giao thương</div><div class="ic">🔔</div></div>
+      <div class="appbar"><div class="ttl">HER MART</div><div class="ic">🔔</div></div>
       <div class="searchwrap"><div class="s" onclick="go('shop')">🔍 Tìm doanh nghiệp, sản phẩm…</div></div>
       <div class="body">
         <div class="banner">
@@ -424,6 +424,12 @@ body[data-screen="login"] .sidebar{display:none}
     <div class="screen" data-s="admin">
       <div class="appbar"><div class="ttl">Quản trị · Dashboard</div></div>
       <div class="body">
+        <div class="mcard" style="cursor:default;align-items:center">
+          <div class="av" style="background:linear-gradient(135deg,var(--blue),var(--rose))">BT</div>
+          <div class="mc-body"><div class="mc-name">Ngụy Như Thị Bích Trâm</div>
+          <div class="mc-sub">Người quản trị · Chi hội phía Nam</div></div>
+          <span class="chip sm">Admin</span>
+        </div>
         <input class="field" value="Kỳ: Tháng 6/2026" readonly>
         <div class="stats2">
           <div class="stat hero"><b id="ad-rev">—</b><span>Tổng doanh số nội bộ</span></div>
@@ -584,7 +590,7 @@ function openProduct(id,name,price){
     <div class="prod" style="cursor:default"><div class="pi" style="height:200px;font-size:80px;background:linear-gradient(135deg,${m.color},#0a3d78)">${pemoji(m.cat)}</div></div>
     <div class="pp" style="color:var(--rose-d);font-weight:800;font-size:24px">${vnd(price)}</div>
     <div style="font-weight:700;font-size:15px">${name}</div>
-    <div class="muted">Sản phẩm của hội viên Hội Nữ Doanh nhân Tam Kỳ. Giá tham khảo — thoả thuận trực tiếp với người bán.</div>
+    <div class="muted">Sản phẩm của hội viên CLB Nữ Doanh nhân Đà Nẵng. Giá tham khảo — thoả thuận trực tiếp với người bán.</div>
     <div class="pmember" onclick="openProfile(${m.id})">
       <div class="av" style="background:${m.color}">${m.ini}</div>
       <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13px">${m.company}</div><div class="muted">Hội viên · ${m.cat}</div></div>
