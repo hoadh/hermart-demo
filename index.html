@@ -597,6 +597,37 @@ function openProduct(id,name,price){
 
 // CART
 var cartQty=2;
+var orderNote='';
+var addresses=[
+  {label:'Nhà', name:'Chị Mai', phone:'0905 123 456', detail:'12 Phan Châu Trinh, P. Tam Kỳ, TP Đà Nẵng'},
+  {label:'Công ty', name:'Chị Mai', phone:'0905 123 456', detail:'88 Hùng Vương, P. Bàn Thạch, TP Đà Nẵng'}
+];
+var selAddr=0, addingAddr=false, naTmp={label:'',name:'',phone:'',detail:''};
+function addrPicker(){
+  const rows=addresses.map((a,i)=>`
+    <div class="mcard" style="cursor:pointer;align-items:flex-start;gap:10px" onclick="selAddr=${i};addingAddr=false;renderCart()">
+      <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${i===selAddr?'var(--rose)':'var(--line)'};flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center">${i===selAddr?'<div style="width:10px;height:10px;border-radius:50%;background:var(--rose)"></div>':''}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:12.5px">${a.name} · ${a.phone} <span class="chip sm">${a.label}</span></div>
+      <div class="muted" style="font-size:12px">📍 ${a.detail}</div></div>
+    </div>`).join('');
+  const form=addingAddr?`
+    <div class="mcard" style="flex-direction:column;align-items:stretch;gap:8px;cursor:default">
+      <div class="label" style="margin:0;color:var(--rose-d)">Thêm địa chỉ mới</div>
+      <input class="field" placeholder="Nhãn (Nhà / Công ty / Kho…)" value="${naTmp.label}" oninput="naTmp.label=this.value">
+      <input class="field" placeholder="Tên người nhận" value="${naTmp.name}" oninput="naTmp.name=this.value">
+      <input class="field" placeholder="Số điện thoại" value="${naTmp.phone}" oninput="naTmp.phone=this.value">
+      <input class="field" placeholder="Địa chỉ chi tiết (số nhà, đường, phường, TP)" value="${naTmp.detail}" oninput="naTmp.detail=this.value">
+      <div class="btnrow"><button class="btn sm" onclick="saveAddr()">Lưu địa chỉ</button><button class="btn ghost sm" onclick="addingAddr=false;renderCart()">Huỷ</button></div>
+    </div>`
+    :`<button class="btn ghost sm" style="align-self:flex-start" onclick="addingAddr=true;renderCart()">+ Thêm địa chỉ mới</button>`;
+  return `<div class="label">Địa chỉ nhận hàng</div>${rows}${form}`;
+}
+function saveAddr(){
+  if(!naTmp.name.trim()||!naTmp.detail.trim()){alert('Vui lòng nhập tên người nhận và địa chỉ chi tiết.');return;}
+  addresses.push({label:naTmp.label.trim()||'Khác',name:naTmp.name.trim(),phone:naTmp.phone.trim(),detail:naTmp.detail.trim()});
+  selAddr=addresses.length-1; addingAddr=false; naTmp={label:'',name:'',phone:'',detail:''};
+  renderCart();
+}
 function renderCart(){
   const c=curProd||{m:M[0],name:M[0].products[0].n,price:M[0].products[0].p};
   const tot=c.price*cartQty;
@@ -605,8 +636,9 @@ function renderCart(){
       <div class="mc-body"><div class="mc-name">${c.name}</div><div class="mc-sub">${c.m.company}</div><div class="price">${vnd(c.price)}</div></div>
       <div class="qty"><button onclick="cartQty=Math.max(1,cartQty-1);renderCart()">−</button><span>${cartQty}</span><button onclick="cartQty++;renderCart()">+</button></div>
     </div>
+    ${addrPicker()}
     <div class="label">Ghi chú cho người bán</div>
-    <input class="field" placeholder="VD: giao chiều thứ 7, gói quà tặng…">
+    <input class="field" placeholder="VD: giao chiều thứ 7, gói quà tặng…" value="${orderNote.replace(/"/g,'&quot;')}" oninput="orderNote=this.value">
     <div class="mcard" style="flex-direction:column;align-items:stretch;gap:8px;cursor:default">
       <div class="r" style="display:flex;justify-content:space-between"><span class="muted">Phương thức</span><b style="font-size:12.5px">Chuyển khoản / tiền mặt</b></div>
       <div class="divider"></div>
@@ -616,7 +648,8 @@ function renderCart(){
     <div class="callout"><b>App không giữ tiền.</b> Chuyển khoản theo thông tin trên (hoặc trả khi nhận hàng). "Gửi đơn" tạo bản ghi giao dịch ở trạng thái <i>chờ người bán xác nhận</i>.</div>`;
 }
 function orderPlaced(){
-  alert('✅ Đã gửi đơn cho người bán!\\n\\nĐơn đang ở trạng thái "Chờ người bán xác nhận". Khi người bán bấm Hoàn thành, đơn sẽ tự động được tính vào thống kê của Hội.');
+  const a=addresses[selAddr];
+  alert('✅ Đã gửi đơn cho người bán!\\n\\nGiao tới: '+a.name+' ('+a.label+')\\n'+a.detail+'\\n\\nĐơn đang "Chờ người bán xác nhận". Khi người bán bấm Hoàn thành, đơn tự động được tính vào thống kê của Hội.');
   go('orders');
 }
 
